@@ -1,0 +1,31 @@
+const OpenAI = require('openai')
+
+const openai = new OpenAI({
+     apiKey: process.env.OPENAI_API_SECRET
+});
+
+const main = async (req, res) => {
+     const {text} = req.body
+     // console.log(text);
+     const completion = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+               {
+                    role: 'system',
+                    content: 'You are a helpful assistant'
+               },
+               {
+                    role: 'user',
+                    content: text
+               }
+          ],
+          max_tokens: 100
+     });
+
+     const response = completion.choices[0].message.content;
+     res.status(200).json({result: response})
+}
+
+module.exports = {
+     main,
+}
