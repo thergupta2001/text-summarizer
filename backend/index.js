@@ -22,7 +22,7 @@ app.use(errorHandler)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/openai', openaiRoutes)
 
-app.get('/',(req,res)=>{
+app.get('/test',(req,res)=>{
      return res.status(200).send({
           message : "hi",
      })
