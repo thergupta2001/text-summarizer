@@ -22,6 +22,12 @@ app.use(errorHandler)
 app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/openai', openaiRoutes)
 
+app.get('/',(req,res)=>{
+     return res.status(200).send({
+          message : "hi",
+     })
+})
+
 app.listen(process.env.PORT, () => {
      console.log(`Server on port ${process.env.PORT}`)
 })

@@ -26,7 +26,11 @@ const registerController = async (req, res, next) => {
                return next(new ErrorResponse('Email is already in use', 500))
           }
 
-          const user = await userModel.create({ username, email, password })
+          const user = await userModel.create({ username, email, password });
+          return res.status(200).send({
+               message : "user created successfully",
+               success : true,
+          })
      } catch (error) {
           console.log(error);
           next(error)

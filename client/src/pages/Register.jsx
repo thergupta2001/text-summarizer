@@ -24,7 +24,7 @@ const Register = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8080/api/v1/auth/register",
+        "https://text-summarizer-git-main-thergupta2001s-projects.vercel.app/api/v1/auth/register",
         {
           username,
           email,
