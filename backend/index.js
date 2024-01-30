@@ -23,7 +23,7 @@ app.use('/api/v1/auth', authRoutes)
 app.use('/api/v1/openai', openaiRoutes)
 
 app.get('/test',(req,res)=>{
-     return res.status(200).send({
+     return res.status(200).json({
           message : "hi",
      })
 })
