@@ -23,8 +23,8 @@ const Completion = () => {
         "http://localhost:8080/api/v1/openai/completion",
         { text }
       );
-
-      setCompletion(data.result.choices[0].text);
+        // console.log(data)
+      setCompletion(data.result);
     } catch (err) {
       toast.error(err.message);
     }
