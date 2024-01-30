@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import toast, { Toaster } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import axios from "axios";
 
-const Summary = () => {
+const Completion = () => {
   const navigate = useNavigate();
-  const [summary, setSummary] = useState("");
+  const [completion, setCompletion] = useState("");
   const [text, setText] = useState("");
 
   useEffect(() => {
@@ -20,19 +20,19 @@ const Summary = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:8080/api/v1/openai/summary",
+        "http://localhost:8080/api/v1/openai/completion",
         { text }
       );
 
-      setSummary(data.result);
+      setCompletion(data.result.choices[0].text);
     } catch (err) {
       toast.error(err.message);
     }
   };
 
   const handleRedirect = () => {
-    navigate("/");
-  };
+     navigate('/');
+   };
 
   return (
     <div className="flex flex-col justify-center items-center mt-10">
@@ -60,13 +60,13 @@ const Summary = () => {
           </button>
         </form>
       </div>
-      {summary && (
+      {completion && (
         <div className="bg-white p-5 rounded-lg shadow-lg flex flex-col border border-gray-500 w-4/6 mt-5">
-          {summary}
+          {completion}
         </div>
       )}
     </div>
   );
 };
 
-export default Summary;
+export default Completion;

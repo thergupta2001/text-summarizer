@@ -12,7 +12,8 @@ const sendToken = (user, statusCode, res) => {
 
      res.status(statusCode).json({
           success: true,
-          token
+          token,
+          user
      })
 }
 
@@ -26,7 +27,6 @@ const registerController = async (req, res, next) => {
           }
 
           const user = await userModel.create({ username, email, password })
-          // sendToken(user, 201, res)
      } catch (error) {
           console.log(error);
           next(error)
@@ -36,8 +36,6 @@ const registerController = async (req, res, next) => {
 const loginController = async (req, res, next) => {
      try {
           const { email, password } = req.body;
-          // const token = req.headers;
-          // console.log(token);
 
           if (!email || !password) {
                return next(new ErrorResponse('Please provide email or password'))
@@ -71,9 +69,7 @@ const verifyController = async (req, res, next) => {
      try {
           const token = req.headers.authorization;
 
-
           const decode = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-          // console.log(decode)
 
           return res.status(201).json({
                success: true,

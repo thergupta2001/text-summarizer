@@ -5,7 +5,7 @@ const openai = new OpenAI({
 });
 
 const main = async (req, res) => {
-     const {text} = req.body
+     const { text } = req.body
      // console.log(text);
      const completion = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
@@ -16,16 +16,30 @@ const main = async (req, res) => {
                },
                {
                     role: 'user',
-                    content: text
+                    content: `Summarize this text - ${text}`
                }
           ],
           max_tokens: 100
      });
 
      const response = completion.choices[0].message.content;
-     res.status(200).json({result: response})
+     res.status(200).json({ result: response })
+}
+
+const completions = async (req, res) => {
+     const { text } = req.body;
+
+     const completion = await openai.completions.create({
+          model: "gpt-3.5-turbo-instruct",
+          prompt: `${text}`,
+          max_tokens: 100,
+          temperature: 0,
+     });
+
+     const response = completion;
+     res.status(200).json({ result: response })
 }
 
 module.exports = {
-     main,
+     main, completions
 }
