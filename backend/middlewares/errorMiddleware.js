@@ -25,13 +25,11 @@ const errorHandler = (err, req, res, next) => {
      if(error.name === 'ValdationError'){
           const message = Object.values(err.errors).map(val => val.message)
           error = new ErrorResponse(message, 400)
-          res.status(error.statusCode || 500).json({
+          res.status(error.statusCode).json({
                success: false,
                error: error.message || 'Server error'
           })
-     }
-
-     
+     } 
 }
 
 module.exports = errorHandler

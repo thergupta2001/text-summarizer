@@ -63,6 +63,7 @@ const loginController = async (req, res, next) => {
 
 const logoutController = async (req, res) => {
      res.clearCookie('refreshToken')
+     
      return res.status(200).json({
           success: true,
           message: 'Logout successfully',
