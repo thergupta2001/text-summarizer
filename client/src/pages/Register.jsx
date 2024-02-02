@@ -17,14 +17,14 @@ const Register = () => {
         navigate("/");
       }
     }
-  }, []);
+  }, [navigate]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const { data } = await axios.post(
-        "https://text-summarizer-git-main-thergupta2001s-projects.vercel.app/api/v1/auth/register",
+        "http://localhost:8080/api/v1/auth/register",
         {
           username,
           email,

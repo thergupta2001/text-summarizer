@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
 import axios from "axios";
+import useVerfied from "../hooks/useVerfied";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -9,33 +10,13 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
+  const { loggedIn, loading } = useVerfied();
+
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const headers = {
-        Authorization: token,
-      };
-
-      async function getResp() {
-        const resp = await axios.post(
-          "http://localhost:8080/api/v1/auth/login",
-          {},
-          { headers: headers }
-        );
-        console.log(resp);
-        if (resp.data.success) {
-          alert(resp.data.message);
-          navigate("/", {
-            replace: true,
-          });
-        }
-      }
-
-      getResp();
-    } else {
-      navigate('/login')
+    if (!loading && loggedIn) {
+      navigate("/", { replace: true });
     }
-  }, []);
+  }, [navigate, loading, loggedIn]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -47,7 +28,7 @@ const Login = () => {
         password,
       });
 
-      localStorage.setItem('name', data.data.user.username)
+      localStorage.setItem("name", data.data.user.username);
       localStorage.setItem("token", data.data.token);
 
       toast.success("User logged in successfully");

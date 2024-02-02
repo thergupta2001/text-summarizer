@@ -1,96 +1,98 @@
-const errorHandler = require('../middlewares/errorMiddleware.js')
-const userModel = require('../models/userModel.js')
-const ErrorResponse = require('../utils/errorResponse.js')
-const jwt = require('jsonwebtoken')
+// const errorHandler = require("../middlewares/errorMiddleware.js");
+const userModel = require("../models/userModel.js");
+// const ErrorResponse = require("../utils/errorResponse.js");
+const jwt = require("jsonwebtoken");
 
 //token creation
 const sendToken = (user, statusCode, res) => {
-     const token = user.getSignedToken()
+  try {
+    const token = user.getSignedToken();
 
-     const refreshToken = jwt.sign({ id: this._id }, process.env.JWT_REFRESH_TOKEN, { expiresIn: process.env.JWT_REFRESH_EXPIREIN })
-     res.cookie('refreshToken', `${refreshToken}`, { maxAge: 86400 * 7000, httpOnly: true })
+    const refreshToken = jwt.sign(
+      { id: this._id },
+      process.env.JWT_REFRESH_TOKEN,
+      { expiresIn: process.env.JWT_REFRESH_EXPIREIN }
+    );
 
-     res.status(statusCode).json({
-          success: true,
-          token,
-          user
-     })
-}
+    return res.status(statusCode).json({
+      success: true,
+      token,
+      user,
+    });
+  } catch (err) {
+    console.log(err.message);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 const registerController = async (req, res, next) => {
-     try {
-          const { username, email, password } = req.body;
+  try {
+    const { username, email, password } = req.body;
+    console.log(req.body);
 
-          const existingEmail = await userModel.findOne({ email });
-          if (existingEmail) {
-               return res.json({ message: "Email already in use" })
-          }
+    const existingEmail = await userModel.findOne({ email });
+    if (existingEmail) {
+      return res.json({ message: "Email already in use" });
+    }
 
-          const user = await userModel.create({ username, email, password });
-          return res.status(200).send({
-               message: "user created successfully",
-               success: true,
-          })
-     } catch (error) {
-          console.log(error);
-          next(error)
-     }
-}
+    await userModel.create({ username, email, password });
+    return res.status(200).send({
+      message: "user created successfully",
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 const loginController = async (req, res, next) => {
-     try {
-          const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
 
-          if (!email || !password) {
-               return res.json({ message: "Invalid credentials" })
-          }
+    // console.log(email, password);
+    if (!email || !password) {
+      return res.json({ message: "Invalid credentials" });
+    }
 
-          const user = await userModel.findOne({ email });
-          if (!user) {
-               return res.json({ message: "Invalid credentials" })
-          }
+    const user = await userModel.findOne({ email });
+    if (!user) {
+      return res.json({ message: "Invalid credentials" });
+    }
 
-          const isMatch = await user.matchPassword(password)
-          if (!isMatch) {
-               return res.json({ message: "Invalid credentials" })
-          }
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.json({ message: "Invalid credentials" });
+    }
 
-          sendToken(user, 200, res);
-     } catch (error) {
-          console.log(error);
-     }
-}
+    sendToken(user, 200, res);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 
 const logoutController = async (req, res) => {
-     res.clearCookie('refreshToken')
+  res.clearCookie("refreshToken");
 
-     return res.status(200).json({
-          success: true,
-          message: 'Logout successfully',
-     })
-}
-
-const verifyController = async (req, res, next) => {
-     try {
-          const token = req.headers.authorization;
-
-          const decode = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
-
-          return res.status(201).json({
-               success: true,
-               message: 'Already Logged In'
-          })
-
-     } catch (error) {
-          console.log(error.message)
-          next();
-     }
-}
+  return res.status(200).json({
+    success: true,
+    message: "Logout successfully",
+  });
+};
 
 module.exports = {
-     registerController,
-     loginController,
-     logoutController,
-     sendToken,
-     verifyController
-}
+  registerController,
+  loginController,
+  logoutController,
+  sendToken,
+};
