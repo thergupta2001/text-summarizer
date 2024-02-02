@@ -11,7 +11,7 @@ app.use(bodyParser.urlencoded({extended: false}))
 app.use(express.json())
 app.use(morgan('dev'))
 
-app.get('/test',(req,res)=>{
+app.get('/',(req,res)=>{
      return res.status(200).json({
           message : "hi",
      })
