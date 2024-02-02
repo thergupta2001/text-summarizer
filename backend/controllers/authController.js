@@ -23,13 +23,13 @@ const registerController = async (req, res, next) => {
 
           const existingEmail = await userModel.findOne({ email });
           if (existingEmail) {
-               return next(new ErrorResponse('Email is already in use', 500))
+               return res.json({ message: "Email already in use" })
           }
 
           const user = await userModel.create({ username, email, password });
           return res.status(200).send({
-               message : "user created successfully",
-               success : true,
+               message: "user created successfully",
+               success: true,
           })
      } catch (error) {
           console.log(error);
@@ -42,17 +42,17 @@ const loginController = async (req, res, next) => {
           const { email, password } = req.body;
 
           if (!email || !password) {
-               return next(new ErrorResponse('Please provide email or password'))
+               return res.json({ message: "Invalid credentials" })
           }
 
           const user = await userModel.findOne({ email });
           if (!user) {
-               return next(new ErrorResponse('Invalid credentials', 401))
+               return res.json({ message: "Invalid credentials" })
           }
 
           const isMatch = await user.matchPassword(password)
           if (!isMatch) {
-               return next(new errorHandler('Invalid credentials', 401))
+               return res.json({ message: "Invalid credentials" })
           }
 
           sendToken(user, 200, res);
@@ -63,7 +63,7 @@ const loginController = async (req, res, next) => {
 
 const logoutController = async (req, res) => {
      res.clearCookie('refreshToken')
-     
+
      return res.status(200).json({
           success: true,
           message: 'Logout successfully',
