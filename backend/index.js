@@ -7,7 +7,7 @@ const connectDB = require('./config/db.js')
 
 const authRoutes = require('./routes/authRoutes.js');
 const openaiRoutes = require('./routes/openaiRoutes.js')
-const errorHandler = require('./middlewares/errorMiddleware.js');
+// const errorHandler = require('./middlewares/errorMiddleware.js');
 
 const app = express();
 
